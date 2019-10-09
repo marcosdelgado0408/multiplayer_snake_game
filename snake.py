@@ -43,7 +43,7 @@ class snake(object):
 
     def __init__(self, color, pos):
         self.color = color
-        self.head = cube(pos, color)
+        self.head = cube(pos, color=color)
         self.body.append(self.head)
         self.dirnx = 0
         self.dirny = 1
@@ -137,7 +137,7 @@ class snake2(object):
 
     def __init__(self, color, pos):
         self.color = color
-        self.head = cube(pos,color)
+        self.head = cube(pos,color=color)
         self.body.append(self.head)
         self.dirnx = 0
         self.dirny = 1
