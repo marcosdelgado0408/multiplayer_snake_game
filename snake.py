@@ -301,14 +301,14 @@ def main():
             snack = cube(randomSnack(rows, s), color=(0, 255, 0))
 
         
-        for x in range(len(s.body)):
+        for x in range(len(s.body)): # cobra 1 morrer 
             if s.body[x].pos in list(map(lambda z: z.pos, s.body[x+1:])):
                 print('Score: ', len(s.body))
                 message_box('You Lost!', 'Play again...')
                 s.reset((10, 10))
                 break
 
-        for x in range(len(s2.body)):
+        for x in range(len(s2.body)): # cobra 2 morrer
             if s2.body[x].pos in list(map(lambda z: z.pos, s2.body[x+1:])):
                 print('Score: ', len(s.body))
                 message_box('You Lost!', 'Play again...')
