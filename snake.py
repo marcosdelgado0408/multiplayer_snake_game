@@ -225,9 +225,6 @@ class snake2(object):
                 c.draw(surface)
 
 
-
-
-
 '''
 def drawGrid(w, rows, surface):
     sizeBtwn = w // rows
@@ -295,24 +292,29 @@ def main():
         clock.tick(10)
         s.move()
         s2.move()
-        if s.body[0].pos == snack.pos:
+        if s.body[0].pos == snack.pos: # cobra 1 comer snack
             s.addCube()
             snack = cube(randomSnack(rows, s), color=(0, 255, 0))
 
-        if s2.body[0].pos == snack.pos:
+        if s2.body[0].pos == snack.pos: # cobra 3 comer snack
             s2.addCube()
             snack = cube(randomSnack(rows, s), color=(0, 255, 0))
 
         
-
-
-
         for x in range(len(s.body)):
             if s.body[x].pos in list(map(lambda z: z.pos, s.body[x+1:])):
                 print('Score: ', len(s.body))
                 message_box('You Lost!', 'Play again...')
                 s.reset((10, 10))
                 break
+
+        for x in range(len(s2.body)):
+            if s2.body[x].pos in list(map(lambda z: z.pos, s2.body[x+1:])):
+                print('Score: ', len(s.body))
+                message_box('You Lost!', 'Play again...')
+                s2.reset((10, 5))
+                break
+            
 
         redrawWindow(win)
 
