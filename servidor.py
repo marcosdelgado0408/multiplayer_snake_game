@@ -10,6 +10,15 @@ s.listen()
 while True:
     clientsocket, adress = s.accept()
     print("Servidor recebeu concexao de {}".format(adress))
-    clientsocket.send(bytes("Servidor está respondendo","utf-8"))
 
 
+    msg = "Mensagem recebida do servidor: "
+    
+    msg_cliente  = clientsocket.recv(1024)
+
+    msg += msg_cliente.decode("utf-8") # para transformar em string -> usar o decode
+
+
+    clientsocket.sendall(bytes(msg,"utf-8"))
+    
+    clientsocket.close();
