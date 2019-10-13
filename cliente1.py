@@ -1,7 +1,7 @@
 import socket
 
 
-
+'''
 def receiveMessage(s):
 
     fullMsg = ""
@@ -15,20 +15,21 @@ def receiveMessage(s):
 
 
     return fullMsg
+'''
 
 
 
 
+while True:
+    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    s.connect(("localhost",5555))
+        
+    send_message = str(input("Digite mensagem para o servidor: "))
 
+    s.sendall(bytes(send_message,"utf-8"))
 
-s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-s.connect(("localhost",5555))
+    msg = s.recv(1024)
+
+    print(msg.decode("utf-8"))
+
     
-send_message = str(input("Digite mensagem para o servidor: "))
-
-s.sendall(bytes(send_message,"utf-8"))
-
-
-print(receiveMessage(s))
-
-
