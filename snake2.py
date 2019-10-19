@@ -55,12 +55,11 @@ class snake(object):
 
     def move(self):
 
-        # c -> cima 
-        # b -> baixo 
+        # c -> cima
+        # b -> baixo
         # d -> direita
         # e -> esquerda
         #enviar_move = ""
-
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -73,7 +72,7 @@ class snake(object):
                     self.dirnx = -1
                     self.dirny = 0
                     self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
-                    self.enviar_move = "e" 
+                    self.enviar_move = "e"
 
                 elif keys[pygame.K_RIGHT]:
                     self.dirnx = 1
@@ -92,7 +91,7 @@ class snake(object):
                     self.dirny = 1
                     self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
                     self.enviar_move = "b"
-    
+
         for i, c in enumerate(self.body):
             p = c.pos[:]
             if p in self.turns:
@@ -111,7 +110,7 @@ class snake(object):
                     c.pos = (c.pos[0], c.rows-1)
                 else:
                     c.move(c.dirnx, c.dirny)
-        
+
     def reset(self, pos):
         self.head = cube(pos)
         self.body = []
@@ -153,7 +152,7 @@ class snake2(object):
 
     def __init__(self, color, pos):
         self.color = color
-        self.head = cube(pos,color=color)
+        self.head = cube(pos, color=color)
         self.body.append(self.head)
         self.dirnx = 0
         self.dirny = 1
@@ -170,22 +169,22 @@ class snake2(object):
 
         keys = receber_direcoes
 
-        if keys == "2e":
+        if keys == "1e":
             self.dirnx = -1
             self.dirny = 0
             self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
 
-        elif keys == "2d":
+        elif keys == "1d":
             self.dirnx = 1
             self.dirny = 0
             self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
 
-        elif keys == "2c":
+        elif keys == "1c":
             self.dirnx = 0
             self.dirny = -1
             self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
 
-        elif keys == "2b":
+        elif keys == "1b":
             self.dirnx = 0
             self.dirny = 1
             self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
@@ -227,11 +226,11 @@ class snake2(object):
         if dx == 1 and dy == 0:
             self.body.append(cube((tail.pos[0]-1, tail.pos[1]), color=cor))
         elif dx == -1 and dy == 0:
-            self.body.append(cube((tail.pos[0]+1, tail.pos[1]),color=cor))
+            self.body.append(cube((tail.pos[0]+1, tail.pos[1]), color=cor))
         elif dx == 0 and dy == 1:
-            self.body.append(cube((tail.pos[0], tail.pos[1]-1),color=cor))
+            self.body.append(cube((tail.pos[0], tail.pos[1]-1), color=cor))
         elif dx == 0 and dy == -1:
-            self.body.append(cube((tail.pos[0], tail.pos[1]+1),color=cor))
+            self.body.append(cube((tail.pos[0], tail.pos[1]+1), color=cor))
 
         self.body[-1].dirnx = dx
         self.body[-1].dirny = dy
@@ -258,8 +257,9 @@ def drawGrid(w, rows, surface):
         pygame.draw.line(surface, (255, 255, 255), (0, y), (w, y))
 '''
 
+
 def redrawWindow(surface):
-    global rows, width, s , s2, snack
+    global rows, width, s, s2, snack
     surface.fill((0, 0, 0))
     s.draw(surface)
     s2.draw(surface)
@@ -301,7 +301,8 @@ def recvMsg(socket1):
 
         print(msg.decode("utf-8"))
 
-        receber_direcoes = msg.decode("utf-8") # colocando as direções da outra cobra na Fila
+        # colocando as direções da outra cobra na Fila
+        receber_direcoes = msg.decode("utf-8")
 
         print(receber_direcoes)
 
@@ -315,8 +316,8 @@ def main():
 
     socket1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     socket1.connect(("localhost", 5556))
- 
-    ID = "1"  # id do snake para o outro snake saber e não mostrar os proprios comandos
+
+    ID = "2" # id do snake para o outro snake saber e não mostrar os proprios comandos 
 
     width = 500
     rows = 20
@@ -334,41 +335,38 @@ def main():
     print("thread criada")
     t.start()
 
-   
     while flag:
         pygame.time.delay(50)
         clock.tick(10)
         s.move()
-        
+
         enviar = ID + s.enviar_move
 
-        socket1.sendall(bytes(enviar, "utf-8")) # enviando direção da cobra de saída
+        socket1.sendall(bytes(enviar, "utf-8"))  # enviando direção da cobra de saída
 
-        s2.move() # cobra que vai receber as informações do servidor
-        
-        if s.body[0].pos == snack.pos: # cobra 1 comer snack
+        s2.move()  # cobra que vai receber as informações do servidor
+
+        if s.body[0].pos == snack.pos:  # cobra 1 comer snack
             s.addCube()
             snack = cube(randomSnack(rows, s), color=(0, 255, 0))
 
-        if s2.body[0].pos == snack.pos: # cobra 3 comer snack
+        if s2.body[0].pos == snack.pos:  # cobra 3 comer snack
             s2.addCube()
             snack = cube(randomSnack(rows, s), color=(0, 255, 0))
 
-        
-        for x in range(len(s.body)): # cobra 1 morrer 
+        for x in range(len(s.body)):  # cobra 1 morrer
             if s.body[x].pos in list(map(lambda z: z.pos, s.body[x+1:])):
                 print('Score: ', len(s.body))
                 message_box('You Lost!', 'Play again...')
                 s.reset((10, 10))
                 break
 
-        for x in range(len(s2.body)): # cobra 2 morrer
+        for x in range(len(s2.body)):  # cobra 2 morrer
             if s2.body[x].pos in list(map(lambda z: z.pos, s2.body[x+1:])):
                 print('Score: ', len(s.body))
                 message_box('You Lost!', 'Play again...')
                 s2.reset((10, 5))
                 break
-            
 
         redrawWindow(win)
     pass

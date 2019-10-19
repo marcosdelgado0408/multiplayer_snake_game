@@ -9,7 +9,7 @@ def enviarMsg(s): # Thread separada para podermos enviar as mensagens e receberm
 
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(("localhost", 5556))
+s.connect(("localhost", 5555))
 
 t = threading.Thread(target=enviarMsg, args=(s,))
 t.daemon = True  # vai acabar a thread quando fecharmos o programa
