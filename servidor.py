@@ -1,13 +1,14 @@
 import socket
 import threading
 import socketserver
- 
+
+
 
 
 def tratarCliente(clientsocket):
-
-        print("Servidor recebeu concexao de {}".format(adress))
-
+   
+    while True:
+       
         msg_cliente = clientsocket.recv(1024).decode("utf-8")  # para transformar em string -> usar o decode
 
         for i in range(0,len(lista_sockets)):
@@ -15,15 +16,15 @@ def tratarCliente(clientsocket):
 
         print(msg_cliente)
 
-        #clientsocket.sendall(bytes(msg_cliente,"utf-8"))
-
-        clientsocket.close()  
-        lista_sockets.remove(clientsocket)
-
-
+        if not msg_cliente: # isso vai servir para não dar erro de ficar tentando receber recv caso matarmos o cliente
+            clientsocket.close()  
+            lista_sockets.remove(clientsocket)
+            break
 
 
 
+
+lista_sockets = []
 
 s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
@@ -31,14 +32,15 @@ s.bind(("localhost",5556))
 print("Escutando...")
 s.listen(2)
 
-lista_sockets = []
-
-
 
 while True:
     clientsocket, adress = s.accept()
+    print("Servidor recebeu concexao de {}".format(adress))
     lista_sockets.append(clientsocket)
-    t = threading.Thread(target=tratarCliente,args=(clientsocket,)).start()
+    
+    t = threading.Thread(target=tratarCliente,args=(clientsocket,))
+    t.daemon = True # vai acabar a thread quando fecharmos o programa
+    t.start()
     
 
 
