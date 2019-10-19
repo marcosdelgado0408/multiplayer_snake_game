@@ -9,6 +9,7 @@ import queue
 
 # essa strng vai servir para adicionar os caracteres da direção(e, d, c, b)
 receber_direcoes = ""
+ID = "1"  # id do snake para o outro snake saber e não mostrar os proprios comandos
 
 
 class cube(object):
@@ -169,6 +170,10 @@ class snake2(object):
         print("chegou no move")
 
         keys = receber_direcoes
+        if not keys: # caso não tiver conectado com a outra cobra -> ele não se move
+            return
+
+        print("keys: " + keys)
 
         if keys == "2e":
             self.dirnx = -1
@@ -208,7 +213,7 @@ class snake2(object):
                     c.pos = (c.pos[0], c.rows-1)
                 else:
                     c.move(c.dirnx, c.dirny)
-
+        receber_direcoes = ""
     def reset(self, pos):
         self.head = cube(pos)
         self.body = []
@@ -301,28 +306,34 @@ def recvMsg(socket1):
 
         print(msg.decode("utf-8"))
 
+
         receber_direcoes = msg.decode("utf-8") # colocando as direções da outra cobra na Fila
 
-        print(receber_direcoes)
+        # precisamos reiniciar receber_direcoes porque se eu desconectar e conectar dnv receber_direcoes não vai estar vazia
+        # e assim a cobra 2 vai se mexer caso não esteja conectada
+        if(receber_direcoes.find("1") != -1): # se tiver achado o proprio ID não pode enviar nada
+            receber_direcoes = ""
+
+        print("recever_direcoes = " + receber_direcoes)
 
         if not msg:
             break
 
 
+
 def main():
     global width, rows, s, s2, snack
-    global receber_direcoes
+    global receber_direcoes , ID
 
     socket1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     socket1.connect(("localhost", 5556))
  
-    ID = "1"  # id do snake para o outro snake saber e não mostrar os proprios comandos
 
     width = 500
     rows = 20
     win = pygame.display.set_mode((width, width))
     s = snake((255, 0, 250), (10, 10))
-    s2 = snake2((0, 255, 0), (10, 5))
+    s2 = snake2((0, 255, 0), (10, 11))
     snack = cube(randomSnack(rows, s), color=(0, 255, 0))
     flag = True
 
@@ -372,6 +383,7 @@ def main():
 
         redrawWindow(win)
     pass
+
 
 
 main()

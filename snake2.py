@@ -168,6 +168,8 @@ class snake2(object):
         print("chegou no move")
 
         keys = receber_direcoes
+        if not keys:  # caso não tiver conectado com a outra cobra -> ele não se move
+            return
 
         if keys == "1e":
             self.dirnx = -1
@@ -304,6 +306,12 @@ def recvMsg(socket1):
         # colocando as direções da outra cobra na Fila
         receber_direcoes = msg.decode("utf-8")
 
+        # precisamos reiniciar receber_direcoes porque se eu desconectar e conectar dnv receber_direcoes não vai estar vazia
+        # e assim a cobra 2 vai se mexer caso não esteja conectada
+        if(receber_direcoes.find("2") != -1):  # se tiver achado o proprio ID não pode enviar nada
+            receber_direcoes = ""
+
+
         print(receber_direcoes)
 
         if not msg:
@@ -322,8 +330,8 @@ def main():
     width = 500
     rows = 20
     win = pygame.display.set_mode((width, width))
-    s = snake((255, 0, 250), (10, 10))
-    s2 = snake2((0, 255, 0), (10, 5))
+    s = snake((255, 0, 250), (10, 11))
+    s2 = snake2((0, 255, 0), (10, 10))
     snack = cube(randomSnack(rows, s), color=(0, 255, 0))
     flag = True
 
@@ -340,7 +348,7 @@ def main():
         clock.tick(10)
         s.move()
 
-        enviar = ID + s.enviar_move
+        enviar = ID + s.enviar_move #TODO ele ta enviando o ID sem nada -> pro isso não para a snake 2
 
         socket1.sendall(bytes(enviar, "utf-8"))  # enviando direção da cobra de saída
 
@@ -370,6 +378,6 @@ def main():
 
         redrawWindow(win)
     pass
-
+    
 
 main()
