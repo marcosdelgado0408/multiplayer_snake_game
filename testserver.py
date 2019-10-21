@@ -11,9 +11,9 @@ import queue
 import struct
 
 # essa strng vai servir para adicionar os caracteres da direção(e, d, c, b)
-receber_direcoes = ""
+receber_direcoes_client1 = ""
+receber_direcoes_client2 = ""
 
-#win = pygame.display.set_mode((500, 500))
 
 win = pygame.display.set_mode((500, 500))
 #win = pygame.Surface((500, 500))
@@ -66,14 +66,10 @@ class snake(object):
         self.enviar_move = ""
 
     def move(self):
-        global receber_direcoes
-        '''
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-        '''
+        global receber_direcoes_client1, receber_direcoes_client2
+    
 
-        keys = receber_direcoes
+        keys = receber_direcoes_client1
 
         if keys == "1e":
             self.dirnx = -1
@@ -95,6 +91,7 @@ class snake(object):
             self.dirny = 1
             self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
 
+
         for i, c in enumerate(self.body):
             p = c.pos[:]
             if p in self.turns:
@@ -113,7 +110,7 @@ class snake(object):
                     c.pos = (c.pos[0], c.rows-1)
                 else:
                     c.move(c.dirnx, c.dirny)
-        
+    
     def reset(self, pos):
         self.head = cube(pos)
         self.body = []
@@ -161,14 +158,15 @@ class snake2(object):
         self.dirny = 1
 
     def move(self):
-        global receber_direcoes
+        global receber_direcoes_client1, receber_direcoes_client2
         '''
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
         '''
 
-        keys = receber_direcoes
+
+        keys = receber_direcoes_client2
 
         if keys == "2e":
             self.dirnx = -1
@@ -198,6 +196,7 @@ class snake2(object):
                 if i == len(self.body)-1:
                     self.turns.pop(p)
             else:
+                print("Chegou no else do boe daspodjasopjdopasdjopasjdopasjop")
                 if c.dirnx == -1 and c.pos[0] <= 0:
                     c.pos = (c.rows-1, c.pos[1])
                 elif c.dirnx == 1 and c.pos[0] >= c.rows-1:
@@ -291,43 +290,48 @@ def message_box(subject, content):
 
 
 def recvMsg():
-    global receber_direcoes
+    global receber_direcoes_client1, receber_direcoes_client2
     global lista_sockets, lista_adresses
 
     while True:
 
-        for i in range(0, len(lista_sockets)):
-            msg = lista_sockets[i].recv(1024)
+        for i in range(0,len(lista_sockets)):
+            msg = lista_sockets[i].recv(1024).decode("utf-8")
 
-            receber_direcoes = msg.decode("utf-8") # colocando as direções da outra cobra na Fila
+            if msg.find("2") != -1:
+                receber_direcoes_client2 = msg  # colocando as direções da outra cobra2 na Fila
 
-            if not msg:
-                break
+            elif msg.find("1") != -1:
+                receber_direcoes_client1 = msg  # colocando as direções da outra cobra2 na Fila
+
+            print(msg)
+      
 
 
 
-def tratarCliente():
+
+def tratarCliente(sock):
     global win, win_rect
     global lista_sockets, lista_adresses
 
+    try:
+        while True:
+            # aqui estou enviando a surface na forma de uma string
+            img_str = pygame.image.tostring(win, 'RGB')  # imagem em forma de texto
+            
+            len_str = struct.pack('!i', len(img_str))  # tamanho dessa imagem
+            
 
-    while True:
-        # aqui estou enviando a surface na forma de uma string
-        img_str = pygame.image.tostring(win, 'RGB')  # imagem em forma de texto
-        
-        len_str = struct.pack('!i', len(img_str))  # tamanho dessa imagem
-        
+            for i in range(0,len(lista_sockets)):
+                lista_sockets[i].send(len_str) # enviando o tamanho da imagem na forma de string para o cliente
+                lista_sockets[i].send(img_str) # enviando a imagem na forma de string para o cliente
 
-        for i in range(0,len(lista_sockets)):
-            lista_sockets[i].send(len_str)
-            lista_sockets[i].send(img_str)
-        
-        for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        running = False
-                    elif event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_ESCAPE:
-                            running = False
+    except Exception as e:
+        print(e)
+    finally:
+        print("Closing socket and exit")
+        sock.close()
+        pygame.quit()
 
 
 
@@ -336,7 +340,6 @@ def tratarCliente():
 
 def main():
     global width, rows, s, s2, snack
-    global receber_direcoes
     global lista_sockets, lista_adresses
 
     width = 500
@@ -351,7 +354,7 @@ def main():
     sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
 
-    sock.bind(("localhost",5556))
+    sock.bind(("localhost",5555))
     print("Escutando...")
     sock.listen(2)
 
@@ -368,19 +371,19 @@ def main():
 
 
 
-    t = threading.Thread(target=tratarCliente,args=())
+    t = threading.Thread(target=tratarCliente,args=(sock,))
     t.start()
    
 
     t2 = threading.Thread(target=recvMsg, args=())
     t2.start()
 
-
     while flag:
         pygame.time.delay(50)
         clock.tick(10)   
 
         s.move()
+
         s2.move()
         
         if s.body[0].pos == snack.pos: # cobra 1 comer snack

@@ -9,7 +9,6 @@ import queue
 import struct
 
 
-
 screen = pygame.display.set_mode((500, 500))
 screen_rect = screen.get_rect()
 
@@ -77,7 +76,7 @@ def main():
     global screen, screen_rect
 
     socket1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    socket1.connect(("localhost", 5556))
+    socket1.connect(("localhost", 5555))
 
     ID = "1"  # id do snake para o outro snake saber e não mostrar os proprios comandos
     width = 500
