@@ -25,3 +25,8 @@ Cada cliente tem um ID, que é constantemente enviado para o servidor, o que imp
 	Apesar dos problemas essa é a base do trabalho daqui em diante.
 
  
+### Colaboradores:
+- Marcos Delgado - https://github.com/marcosdelgado0408 
+- Weverson Paulo - https://github.com/Versinho
+- Daniele Carvalho - https://github.com/daniele-mc
+ 
