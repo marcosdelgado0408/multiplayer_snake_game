@@ -168,6 +168,7 @@ class snake2(object):
 
         keys = receber_direcoes_client2
 
+
         if keys == "2e":
             self.dirnx = -1
             self.dirny = 0
@@ -188,6 +189,7 @@ class snake2(object):
             self.dirny = 1
             self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
 
+
         for i, c in enumerate(self.body):
             p = c.pos[:]
             if p in self.turns:
@@ -196,7 +198,6 @@ class snake2(object):
                 if i == len(self.body)-1:
                     self.turns.pop(p)
             else:
-                print("Chegou no else do boe daspodjasopjdopasdjopasjdopasjop")
                 if c.dirnx == -1 and c.pos[0] <= 0:
                     c.pos = (c.rows-1, c.pos[1])
                 elif c.dirnx == 1 and c.pos[0] >= c.rows-1:
@@ -207,6 +208,9 @@ class snake2(object):
                     c.pos = (c.pos[0], c.rows-1)
                 else:
                     c.move(c.dirnx, c.dirny)
+
+
+
 
     def reset(self, pos):
         self.head = cube(pos)
@@ -345,16 +349,16 @@ def main():
     width = 500
     rows = 20
     s = snake((255, 0, 250), (10, 10))
-    s2 = snake2((0, 255, 0), (10, 5))
+    s2 = snake2((0, 196, 196), (10, 5))
     snack = cube(randomSnack(rows, s), color=(0, 255, 0))
     flag = True
 
     clock = pygame.time.Clock()
 
     sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    sock.setblocking(True)
 
-
-    sock.bind(("localhost",5555))
+    sock.bind(("localhost",5556))
     print("Escutando...")
     sock.listen(2)
 
@@ -385,12 +389,13 @@ def main():
         s.move()
 
         s2.move()
-        
+
+
         if s.body[0].pos == snack.pos: # cobra 1 comer snack
             s.addCube()
             snack = cube(randomSnack(rows, s), color=(0, 255, 0))
 
-        if s2.body[0].pos == snack.pos: # cobra 3 comer snack
+        if s2.body[0].pos == snack.pos: # cobra 2 comer snack
             s2.addCube()
             snack = cube(randomSnack(rows, s), color=(0, 255, 0))
 
@@ -414,5 +419,7 @@ def main():
     pass
 
 
+t = threading.Thread(target=main, args=())
+t.start()
 
-main()
+#main()

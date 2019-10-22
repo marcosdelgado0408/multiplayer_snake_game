@@ -78,7 +78,7 @@ def main():
     global screen, screen_rect
 
     socket1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    socket1.connect(("localhost", 5555))
+    socket1.connect(("localhost", 5556))
 
     ID = "2"  # id do snake para o outro snake saber e não mostrar os proprios comandos
     width = 500
@@ -132,10 +132,11 @@ def main():
                     enviar_move = "b"
 
         enviar = ID + enviar_move
+
         # enviando direção da cobra de saída
         socket1.sendall(bytes(enviar, "utf-8"))
-
         print(enviar)
+
 
         pygame.display.update()
     pass
