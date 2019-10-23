@@ -23,7 +23,7 @@ Como com essa abordagem não seria possível responder às questões levantadas 
 Para isso usamos funções do pygames, que, resumidamente, transformam o tabuleiro numa string que pode ser enviada e convertida novamente para um tabuleiro, pronto para ser “desenhado” na tela.
 Porém essa não é uma abordagem eficiente, e provavelmente por isso o jogo é um tanto travado e às vezes não responde bem.
 Cada cliente tem um ID, que é constantemente enviado para o servidor, o que impede que um socket bloqueie outro. Com o ID sozinho nada é feito, mas este pode vir acompanhado com a informação de qual tecla foi pressionada pelo usuário, e então a direção da cobra com o respectivo ID é alterado.
-	Além dos problemas de desempenho, há um problema em que a cobra, ao tocar na borda, não reaparece do lado oposto, é como se o tabuleiro fosse maior que o mostrado.
+	Além dos problemas de desempenho, há um problema em que *a cobra, ao tocar na borda, não reaparece do lado oposto*, é como se o tabuleiro fosse maior que o mostrado.
 	Apesar dos problemas essa é a base do trabalho daqui em diante.
 
  
