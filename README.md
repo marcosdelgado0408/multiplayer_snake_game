@@ -1,9 +1,11 @@
 # multiplayer_snake_game
 Operating Systems Project
-#
+
 
 Para exutar o programa deve ser necesário rodar primeiro o arquivo **testeserver.py** e depois os arquivos **client1.py** e **client2.py**. Além disso, para o programa funcionar devem ser instaladas as biliotecas *pygame* e *tkinter*.
 
+
+![Captura de tela de 2019-10-23 16-36-15](https://user-images.githubusercontent.com/44793167/67441013-8af82900-f5d1-11e9-9b58-5321df7037d2.png)
 
 
   A atividade do trabalho prático consiste em implementar através de sockets e de networking I/O o jogo PySnakes, que seria um jogo da cobrinha mas com múltiplas snakes em um mesmo tabuleiro. Durante o desenvolvimento do trabalho, algumas abordagens foram adotadas para conseguir fazer a conexão entre cliente e servidor, sendo necessário implementar o jogo em três cenários distintos, tendo como primeiro cenário uma I/O programada, o segundo I/O orientada à interrupção e o terceiro I/O orientada à DMA.
