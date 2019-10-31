@@ -168,7 +168,6 @@ class snake2(object):
 
         keys = receber_direcoes_client2
 
-
         if keys == "2e":
             self.dirnx = -1
             self.dirny = 0
@@ -197,7 +196,7 @@ class snake2(object):
                 c.move(turn[0], turn[1])
                 if i == len(self.body)-1:
                     self.turns.pop(p)
-            else:
+            else:  
                 if c.dirnx == -1 and c.pos[0] <= 0:
                     c.pos = (c.rows-1, c.pos[1])
                 elif c.dirnx == 1 and c.pos[0] >= c.rows-1:
@@ -308,7 +307,6 @@ def recvMsg():
             elif msg.find("1") != -1:
                 receber_direcoes_client1 = msg  # colocando as direções da outra cobra2 na Fila
 
-            print(msg)
       
 
 
@@ -358,7 +356,7 @@ def main():
     sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     sock.setblocking(True)
 
-    sock.bind(("localhost",5556))
+    sock.bind(("localhost",5555))
     print("Escutando...")
     sock.listen(2)
 
@@ -383,12 +381,45 @@ def main():
     t2.start()
 
     while flag:
+     
         pygame.time.delay(50)
         clock.tick(10)   
 
         s.move()
 
         s2.move()
+
+        # verificações para a cobra 1 voltar para o outro lado do mapa
+        for i in s.body:  
+            if s.dirnx == -1 and i.pos[0] < 0:
+                i.pos = (i.rows-1, i.pos[1])
+            
+            elif s.dirnx == 1 and i.pos[0] > i.rows-1:
+                i.pos = (0, i.pos[1])
+            
+            elif s.dirny == 1 and i.pos[1] > i.rows-1:
+                i.pos = (i.pos[0], 0)
+            
+            elif s.dirny == -1 and i.pos[1] < 0:
+                i.pos = (i.pos[0], i.rows-1)
+
+
+
+        # verificações para a cobra 2 voltar para o outro lado do mapa
+        for i in s2.body:
+            if s2.dirnx == -1 and i.pos[0] < 0:
+                i.pos = (i.rows-1, i.pos[1])
+            
+            elif s2.dirnx == 1 and i.pos[0] > i.rows-1:
+                i.pos = (0, i.pos[1])
+            
+            elif s2.dirny == 1 and i.pos[1] > i.rows-1:
+                i.pos = (i.pos[0], 0)
+            
+            elif s2.dirny == -1 and i.pos[1] < 0:
+                i.pos = (i.pos[0], i.rows-1)
+
+
 
 
         if s.body[0].pos == snack.pos: # cobra 1 comer snack
